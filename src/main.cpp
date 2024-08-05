@@ -4,8 +4,12 @@
 #include <iostream>
 
 int main() {
-    int32_t image_width = 256;
-    int32_t image_height = 256;
+    double aspect_ratio = 16.0 / 9.0;
+    int32_t image_width = 400;
+    int32_t image_height = std::max(int32_t(image_width / aspect_ratio), 1);
+
+    double viewport_height = 2.0;
+    double viewport_width = viewport_height * (double(image_height) / image_width);
 
     std::cout << "P3" << std::endl;
     std::cout << image_width << " " << image_height << std::endl;
