@@ -7,8 +7,9 @@
 class camera {
     public:
     double aspect_ratio = 1.0;
-    int image_width = 100;
-    int samples_per_pixel = 10;
+    int32_t image_width = 100;
+    int32_t samples_per_pixel = 10;
+    int32_t max_depth = 10;
 
     public:
     void render(const hittable& world) {
@@ -26,7 +27,7 @@ class camera {
                 // 複数点をサンプリングしてレイを飛ばした上で、その色の平均を最終出力結果とする。
                 for (int32_t sample = 0; sample < samples_per_pixel; sample++) {
                     ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, world);
+                    pixel_color += ray_color(r, world, max_depth - 1);
                 }
                 write_color(std::cout, pixel_samples_scale * pixel_color);
             }
@@ -100,8 +101,10 @@ class camera {
      */
     color ray_color(
         const ray& r,
-        const hittable& world
+        const hittable& world,
+        const int32_t depth
     ) const {
+        if (depth <= 0) { return color{0, 0, 0}; }
         // Hittableに衝突したときの、その位置に関する情報
         hit_record rec;
         // 物体に衝突した場合には
@@ -109,7 +112,7 @@ class camera {
         // 光線の逆進性を用いてこれを解釈すると、ある方向から飛んできたレイが反射率の影響を受けながらランダムな方向に飛んでいく過程だとみなせる。
         if (world.hit(r, interval{0, infinity}, rec)) {
             vec3 direction = random_on_hemisphere(rec.normal);
-            return 0.5 * ray_color(ray{rec.p, direction}, world);
+            return 0.5 * ray_color(ray{rec.p, direction}, world, depth - 1);
         }
         // 無限遠にレイが飛んでいくようであれば、空の色を返す。
         vec3 unit_direction = unit_vector(r.direction());
