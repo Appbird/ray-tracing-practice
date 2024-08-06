@@ -110,8 +110,8 @@ class camera {
         // 物体に衝突した場合には
         // その衝突点からさらにランダムな方向にレイを飛ばし、その飛ばしたレイの色を用いて評価する
         // 光線の逆進性を用いてこれを解釈すると、ある方向から飛んできたレイが反射率の影響を受けながらランダムな方向に飛んでいく過程だとみなせる。
-        if (world.hit(r, interval{0, infinity}, rec)) {
-            vec3 direction = random_on_hemisphere(rec.normal);
+        if (world.hit(r, interval{0.001, infinity}, rec)) {
+            vec3 direction = rec.normal + random_unit_vector();
             return 0.5 * ray_color(ray{rec.p, direction}, world, depth - 1);
         }
         // 無限遠にレイが飛んでいくようであれば、空の色を返す。

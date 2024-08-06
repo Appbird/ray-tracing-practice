@@ -6,10 +6,22 @@
 
 using color = vec3;
 
+inline double linear_to_gamma(double x) {
+    if (x > 0) { return std::sqrt(x); }
+    return 0;
+}
+
 void write_color(std::ostream& out, const color& pixel_color) {
-    auto r = pixel_color.x();
-    auto g = pixel_color.y();
-    auto b = pixel_color.z();
+    double r = pixel_color.x();
+    double g = pixel_color.y();
+    double b = pixel_color.z();
+    
+    // ここで受け渡されたrgbは物理的なエネルギーの強度を表しているが、
+    // 実際に出力すべき値は人間が感じる明るさの強度である。
+    // ガンマ空間に変換することで、エネルギーの強度から人間が感じる明るさの強度に変換する。
+    r = linear_to_gamma(r);
+    g = linear_to_gamma(g);
+    b = linear_to_gamma(b);
 
     // Translate the [0,1] component values to the byte range [0,255].
     static const interval intensity{0, (1 - 1e-3)};
