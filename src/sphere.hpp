@@ -18,8 +18,7 @@ class sphere : public hittable {
         
         bool hit(
             const ray& r,
-            double ray_tmin,
-            double ray_tmax,
+            interval ray_t,
             hit_record& rec
         ) const override
         {
@@ -29,12 +28,12 @@ class sphere : public hittable {
             const double c = oc.length_squared() - radius*radius;
             const double discriminant = b*b - a*c;
             
-            if (discriminant < 0) { return -1.0; }
+            if (discriminant < 0) { return false; }
 
             const double sqrt_d = std::sqrt(discriminant);
             double root = (b - sqrt_d) / a;
-            if (root < ray_tmin) { root = (b + sqrt_d) / a; }
-            if (root < ray_tmin or ray_tmax < root) { return false; }
+            if (root < ray_t.min) { root = (b + sqrt_d) / a; }
+            if (root < ray_t.min or ray_t.max < root) { return false; }
 
             rec.t = root;
             rec.p = r.at(rec.t);
