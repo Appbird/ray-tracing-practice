@@ -11,14 +11,7 @@ double hit_sphere(
     double radius,
     const ray& r
 ) {
-    const vec3 oc = center - r.origin();
-    const double a = dot(r.direction(), r.direction());
-    const double b = -2 * dot(r.direction(), oc);
-    const double c = dot(oc, oc) - sq(radius);
-    const double discriminant = sq(b) - 4*a*c;
     
-    if (discriminant < 0) { return -1.0; }
-    return (-b - std::sqrt(discriminant)) / (2 * a);
     
 }
 
