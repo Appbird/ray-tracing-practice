@@ -32,8 +32,8 @@ class sphere : public hittable {
 
             const double sqrt_d = std::sqrt(discriminant);
             double root = (b - sqrt_d) / a;
-            if (root < ray_t.min) { root = (b + sqrt_d) / a; }
-            if (root < ray_t.min or ray_t.max < root) { return false; }
+            if (root <= ray_t.min) { root = (b + sqrt_d) / a; }
+            if (root <= ray_t.min or ray_t.max <= root) { return false; }
 
             rec.t = root;
             rec.p = r.at(rec.t);

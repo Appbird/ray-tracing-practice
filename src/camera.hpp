@@ -83,7 +83,7 @@ class camera {
         const vec3 offset = sample_square();
         const vec3 pixel_sample = pixel00_loc
             + ((i + offset.x()) * pixel_delta_u)
-            + ((j + offset.y()) * pixel_delta_u);
+            + ((j + offset.y()) * pixel_delta_v);
         
         const vec3 ray_origin = center;
         const vec3 ray_direction = pixel_sample - ray_origin;
@@ -95,15 +95,23 @@ class camera {
         return vec3(random_double() - 0.5, random_double() - 0.5, 0);
     }
  
+    /**
+     * @brief `world`に向けて飛ばした飛ばした光線`r`が何色かを評価する。
+     */
     color ray_color(
         const ray& r,
         const hittable& world
     ) const {
+        // Hittableに衝突したときの、その位置に関する情報
         hit_record rec;
-        if (world.hit(r, interval{0, infinity}, rec) > 0) {
-            return 0.5 * (rec.normal + vec3{1, 1, 1});
+        // 物体に衝突した場合には
+        // その衝突点からさらにランダムな方向にレイを飛ばし、その飛ばしたレイの色を用いて評価する
+        // 光線の逆進性を用いてこれを解釈すると、ある方向から飛んできたレイが反射率の影響を受けながらランダムな方向に飛んでいく過程だとみなせる。
+        if (world.hit(r, interval{0, infinity}, rec)) {
+            vec3 direction = random_on_hemisphere(rec.normal);
+            return 0.5 * ray_color(ray{rec.p, direction}, world);
         }
-        
+        // 無限遠にレイが飛んでいくようであれば、空の色を返す。
         vec3 unit_direction = unit_vector(r.direction());
         const double a = 0.5 * (unit_direction.y() + 1.0);
         return (1 - a)*color{1.0, 1.0, 1.0} + a*color{0.5, 0.7, 1.0};
