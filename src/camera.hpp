@@ -3,6 +3,7 @@
 
 #include "rtweekend.hpp"
 #include "hittable.hpp"
+#include "material.hpp"
 
 class camera {
     public:
@@ -105,14 +106,19 @@ class camera {
         const int32_t depth
     ) const {
         if (depth <= 0) { return color{0, 0, 0}; }
+        
         // Hittableに衝突したときの、その位置に関する情報
         hit_record rec;
         // 物体に衝突した場合には
         // その衝突点からさらにランダムな方向にレイを飛ばし、その飛ばしたレイの色を用いて評価する
         // 光線の逆進性を用いてこれを解釈すると、ある方向から飛んできたレイが反射率の影響を受けながらランダムな方向に飛んでいく過程だとみなせる。
         if (world.hit(r, interval{0.001, infinity}, rec)) {
-            vec3 direction = rec.normal + random_unit_vector();
-            return 0.5 * ray_color(ray{rec.p, direction}, world, depth - 1);
+            ray scattered;
+            color attenuation;
+            if (rec.mat->scatter(r, rec, attenuation, scattered)) {
+                return attenuation * ray_color(scattered, world, depth - 1);
+            }
+            return color{0, 0, 0};
         }
         // 無限遠にレイが飛んでいくようであれば、空の色を返す。
         vec3 unit_direction = unit_vector(r.direction());

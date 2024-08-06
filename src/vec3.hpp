@@ -61,6 +61,13 @@ class vec3 {
             random_double(min, max),
         };
     }
+    bool near_zero() {
+        double s = 1e-8;
+        return 
+            (std::abs(e[0]) < s) and
+            (std::abs(e[1]) < s) and
+            (std::abs(e[2]) < s);
+    }
 };
 
 // point3 is just an alias for vec3, but useful for geometric clarity in the code.
@@ -125,6 +132,10 @@ inline vec3 random_unit_vector() {
 inline vec3 random_on_hemisphere(const vec3& normal) {
     const vec3 on_unit_sphere = random_unit_vector();
     return (dot(on_unit_sphere, normal) > 0) ? on_unit_sphere : -on_unit_sphere;
+}
+
+inline vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2*dot(v, n)*n;
 }
 
 #endif
