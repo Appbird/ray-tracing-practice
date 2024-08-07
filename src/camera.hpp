@@ -5,12 +5,19 @@
 #include "hittable.hpp"
 #include "material.hpp"
 
+/**
+ * @brief 与えられたワールドの特定の位置からレイを発射し、それらの色を評価することで色を定める。
+ * 
+ */
 class camera {
     public:
     double aspect_ratio = 1.0;
     int32_t image_width = 100;
     int32_t samples_per_pixel = 10;
     int32_t max_depth = 10;
+    
+    /** Vertical view angle (field of view) */
+    double vfov = 90;
 
     public:
     void render(const hittable& world) {
@@ -59,7 +66,9 @@ class camera {
 
         // Viewport Settings
         double focal_length = 1.0;
-        double viewport_height = 2.0;
+        double theta = degrees_to_radians(vfov);
+        double h = std::tan(theta/2);
+        double viewport_height = 2 * h * focal_length;
         double viewport_width = viewport_height * (double(image_width) / image_height);
         center = {0, 0, 0};
 

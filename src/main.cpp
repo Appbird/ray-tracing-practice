@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-int main() {
+hittable_list world_setup1() {
     // World
     hittable_list world;
 
@@ -24,13 +24,32 @@ int main() {
     world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
     world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.4, material_bubble));
     world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
+    return world;
+}
 
+hittable_list world_setup_fov_test() {
+    hittable_list world;
+
+    double R = std::cos(pi / 4);
+    auto material_left = make_shared<lambertian>(color{0, 0, 1});
+    auto material_right = make_shared<lambertian>(color{1, 0, 0});
+
+    world.add(make_shared<sphere>(point3{-R, 0, -1}, R, material_left));
+    world.add(make_shared<sphere>(point3{R, 0, -1}, R, material_right));
+
+    return world;
+}
+
+int main() {
+    hittable_list world = world_setup_fov_test();
 
     camera cam;
     cam.aspect_ratio    = 16.0 / 9.0;
     cam.image_width     = 400;
     cam.samples_per_pixel = 100;
     cam.max_depth = 50;
+
+    cam.vfov = 90;
 
     cam.render(world);
 }
