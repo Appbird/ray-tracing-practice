@@ -101,12 +101,16 @@ class dielectric : public material {
             const vec3 unit_direction = unit_vector(r_in.direction());
             const double cos_theta = min(1.0, dot(-unit_direction, rec.normal));
             const double sin_theta = std::sqrt(1 - cos_theta*cos_theta);
-            const bool can_refract = (ri*sin_theta <= 1.0);
+            const bool cannot_refract = (ri*sin_theta > 1.0);
             
-            const vec3 next_direction =
-                (can_refract)
-                ? reflact(unit_direction, rec.normal, ri)
-                : reflect(unit_direction, rec.normal);
+            vec3 next_direction;
+            // Snell方程式に解が存在しなければ全反射する。
+            // あるいは、そうでない場合についても一定確率（反射率）で反射させる。
+            if (cannot_refract or reflectance(cos_theta, ri) > random_double()) {
+                next_direction = reflect(unit_direction, rec.normal);
+            } else {
+                next_direction = reflact(unit_direction, rec.normal, ri);
+            }
             scattered = ray{rec.p, next_direction};
             return true;
         }
