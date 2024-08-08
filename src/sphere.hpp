@@ -29,10 +29,10 @@ class sphere : public hittable {
             shared_ptr<material> mat
         ):
             center1(center1),
-            center_vec(center2 - center1),
             radius(radius),
             mat(mat),
-            is_moving(true)
+            is_moving(true),
+            center_vec(center2 - center1)
         {}
         
         point3 sphere_center(double time) const {
