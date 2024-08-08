@@ -9,6 +9,11 @@ struct interval {
     interval(): min(+infinity), max(-infinity) {}
 
     interval(double min, double max): min(min), max(max) {}
+    // `a`, `b`の共通部分
+    interval(const interval& a, const interval& b) {
+        min = std::min(a.min, b.min);
+        max = std::max(a.max, b.max);
+    }
 
     double size() const { return max - min; }
     double contains(double x) const     { return min <= x and x <= max; }

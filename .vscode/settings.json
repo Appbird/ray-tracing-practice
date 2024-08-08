@@ -76,6 +76,7 @@
         "iomanip": "cpp",
         "semaphore": "cpp",
         "shared_mutex": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "cassert": "cpp"
     }
 }

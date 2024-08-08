@@ -10,6 +10,7 @@ class sphere : public hittable {
         std::shared_ptr<material> mat;
         bool is_moving;
         vec3 center_vec;
+        aabb bbox; // bounding box
     public:
         sphere(
             const point3& center,
@@ -20,7 +21,10 @@ class sphere : public hittable {
             radius(std::max(radius, 0.0)),
             mat(mat),
             is_moving(false)
-        {}
+        {
+            auto rvec = radius * vec3(1, 1, 1);
+            bbox = aabb(center - rvec, center1 + rvec);
+        }
 
         sphere(
             const point3& center1,
@@ -33,7 +37,12 @@ class sphere : public hittable {
             mat(mat),
             is_moving(true),
             center_vec(center2 - center1)
-        {}
+        {
+            auto rvec = radius * vec3(1, 1, 1);
+            aabb box1 = aabb(center1 - rvec, center1 + rvec);
+            aabb box2 = aabb(center2 - rvec, center2 + rvec);
+            bbox = aabb(box1, box2);
+        }
         
         point3 sphere_center(double time) const {
             return center1 + time * center_vec;
@@ -68,6 +77,7 @@ class sphere : public hittable {
             return true;
         }
 
+        aabb bounding_box() const override { return bbox; }
 };
 
 #endif

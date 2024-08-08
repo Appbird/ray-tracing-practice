@@ -31,6 +31,9 @@ inline double random_double() {
 inline double random_double(double min, double max) {
     return min + (max - min) * random_double();
 }
+inline int32_t random_int(int32_t min, int32_t max) {
+    return int32_t(random_double(min, max + 1));
+}
 
 // Common Headers
 #include "color.hpp"

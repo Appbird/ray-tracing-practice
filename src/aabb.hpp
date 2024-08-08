@@ -24,7 +24,17 @@ class aabb {
             y = (a[1] <= b[1]) ? interval(a[1], b[1]) : interval(b[1], a[1]);
             z = (a[2] <= b[2]) ? interval(a[2], b[2]) : interval(b[2], a[2]);
         }
-        const interval& axis_interval(int n) {
+        // `box0`, `box1`を内包する最小のAABB
+        aabb(
+            const aabb& box0, 
+            const aabb& box1
+        ) {
+            x = interval(box0.x, box1.x);
+            y = interval(box0.y, box1.y);
+            z = interval(box0.z, box1.z);
+        }
+
+        const interval& axis_interval(int n) const {
             switch (n) {
                 case 1: return y;
                 case 2: return z;
@@ -32,7 +42,7 @@ class aabb {
             }
         }
 
-        bool hit(const ray& r, interval ray_t) {
+        bool hit(const ray& r, interval ray_t) const {
             const point3& ray_orig  = r.origin();
             const point3& ray_dir   = r.direction();
             
@@ -50,6 +60,19 @@ class aabb {
             }
             return true;
         }
+        int32_t longest_axis() const {
+            if (x.size() > y.size()) {
+                return x.size() > z.size() ? 0 : 2;
+            }
+            else {
+                return y.size() > z.size() ? 1 : 2;
+            }
+        }
+
+        static const aabb empty, universe;
 };
+
+const aabb aabb::empty      = aabb(interval::empty, interval::empty, interval::empty);
+const aabb aabb::universe   = aabb(interval::universe, interval::universe, interval::universe);
 
 #endif
