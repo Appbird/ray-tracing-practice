@@ -19,6 +19,20 @@ struct interval {
         if (x > max) { return max; }
         return x;
     }
+    interval expand(double delta) const {
+        double padding = delta / 2;
+        return interval{ min - padding, max + padding };
+    }
+
+    double overlaps(interval i1, interval i2) {
+        double t_min = std::max(i1.min, i2.min);
+        double t_max = std::min(i1.max, i2.max);
+        return t_min < t_max;
+    }
+
+    bool is_empty() const {
+        return max <= min;
+    }
 
     static const interval empty, universe;
 };
