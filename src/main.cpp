@@ -27,6 +27,7 @@ hittable_list world_setup_rtweekend() {
                     // diffuse
                     auto albedo = color::random() * color::random();
                     sphere_material = make_shared<lambertian>(albedo);
+                    auto center2 = center + vec3{0, random_double(0, 0.5), 0};
                     world.add(make_shared<sphere>(center, 0.2, sphere_material));
                 } else if (choose_mat < 0.95) {
                     // metal
@@ -62,8 +63,8 @@ int main() {
 
     camera cam;
     cam.aspect_ratio    = 16.0 / 9.0;
-    cam.image_width     = 640;
-    cam.samples_per_pixel = 300;
+    cam.image_width     = 400;
+    cam.samples_per_pixel = 50;
     cam.max_depth = 50;
 
     cam.vfov = 20;
