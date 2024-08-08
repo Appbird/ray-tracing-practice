@@ -6,15 +6,15 @@
 
 using color = vec3;
 
-inline double linear_to_gamma(double x) {
+inline float linear_to_gamma(float x) {
     if (x > 0) { return std::sqrt(x); }
     return 0;
 }
 
 void write_color(std::ostream& out, const color& pixel_color) {
-    double r = pixel_color.x();
-    double g = pixel_color.y();
-    double b = pixel_color.z();
+    float r = pixel_color.x();
+    float g = pixel_color.y();
+    float b = pixel_color.z();
     
     // ここで受け渡されたrgbは物理的なエネルギーの強度を表しているが、
     // 実際に出力すべき値は人間が感じる明るさの強度である。

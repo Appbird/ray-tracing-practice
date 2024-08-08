@@ -28,7 +28,7 @@ class hittable_list: public hittable {
             hit_record& rec
         ) const override {
             bool hit_anything = false;
-            double closest_so_far = ray_t.max;
+            float closest_so_far = ray_t.max;
 
             for (const auto& object : objects) {
                 hit_record temp_rec;

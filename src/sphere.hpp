@@ -6,7 +6,7 @@
 class sphere : public hittable {
     private:
         point3 center1;
-        double radius;
+        float radius;
         std::shared_ptr<material> mat;
         bool is_moving;
         vec3 center_vec;
@@ -14,11 +14,11 @@ class sphere : public hittable {
     public:
         sphere(
             const point3& center,
-            const double radius,
+            const float radius,
             shared_ptr<material> mat
         ):
             center1(center),
-            radius(std::max(radius, 0.0)),
+            radius(std::max(radius, 0.0f)),
             mat(mat),
             is_moving(false)
         {
@@ -29,7 +29,7 @@ class sphere : public hittable {
         sphere(
             const point3& center1,
             const point3& center2,
-            double radius,
+            float radius,
             shared_ptr<material> mat
         ):
             center1(center1),
@@ -44,7 +44,7 @@ class sphere : public hittable {
             bbox = aabb(box1, box2);
         }
         
-        point3 sphere_center(double time) const {
+        point3 sphere_center(float time) const {
             return center1 + time * center_vec;
         }
 
@@ -56,15 +56,15 @@ class sphere : public hittable {
         {
             const point3 center = is_moving ? sphere_center(r.time()) : center1;
             const vec3 oc = center - r.origin();
-            const double a = r.direction().length_squared();
-            const double b = dot(r.direction(), oc);
-            const double c = oc.length_squared() - radius*radius;
-            const double discriminant = b*b - a*c;
+            const float a = r.direction().length_squared();
+            const float b = dot(r.direction(), oc);
+            const float c = oc.length_squared() - radius*radius;
+            const float discriminant = b*b - a*c;
             
             if (discriminant < 0) { return false; }
 
-            const double sqrt_d = std::sqrt(discriminant);
-            double root = (b - sqrt_d) / a;
+            const float sqrt_d = std::sqrt(discriminant);
+            float root = (b - sqrt_d) / a;
             if (root <= ray_t.min) { root = (b + sqrt_d) / a; }
             if (root <= ray_t.min or ray_t.max <= root) { return false; }
 

@@ -18,8 +18,8 @@ hittable_list world_setup_rtweekend() {
 
     for (int32_t a = -11; a < 11; a++) {
         for (int32_t b = -11; b < 11; b++) {
-            double choose_mat = random_double();
-            point3 center = point3{static_cast<double>(a), 0.2, static_cast<double>(b)} + 0.9*point3{random_double(), 0, random_double()};
+            float choose_mat = random_float();
+            point3 center = point3{static_cast<float>(a), 0.2, static_cast<float>(b)} + 0.9*point3{random_float(), 0, random_float()};
 
             if ((center - point3(4, 0.2, 0)).length() > 0.9) {
                 shared_ptr<material> sphere_material;
@@ -28,12 +28,12 @@ hittable_list world_setup_rtweekend() {
                     // diffuse
                     auto albedo = color::random() * color::random();
                     sphere_material = make_shared<lambertian>(albedo);
-                    auto center2 = center + vec3{0, random_double(0, 0.5), 0};
+                    auto center2 = center + vec3{0, random_float(0, 0.5), 0};
                     world.add(make_shared<sphere>(center, center2, 0.2, sphere_material));
                 } else if (choose_mat < 0.95) {
                     // metal
                     auto albedo = color::random(0.5, 1);
-                    auto fuzz = random_double(0, 0.5);
+                    auto fuzz = random_float(0, 0.5);
                     sphere_material = make_shared<metal>(albedo, fuzz);
                     world.add(make_shared<sphere>(center, 0.2, sphere_material));
                 } else {

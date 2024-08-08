@@ -48,8 +48,8 @@ class aabb {
             
             for (int32_t axis = 0; axis < 3; axis++) {
                 const interval& ax = axis_interval(axis);
-                double t0 = (ax.min - ray_orig[axis]) / ray_dir[axis];
-                double t1 = (ax.max - ray_orig[axis]) / ray_dir[axis];
+                float t0 = (ax.min - ray_orig[axis]) / ray_dir[axis];
+                float t1 = (ax.max - ray_orig[axis]) / ray_dir[axis];
                 if (t0 > t1) { std::swap(t0, t1); }
                 assert(t0 <= t1);
 

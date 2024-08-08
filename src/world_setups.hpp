@@ -30,7 +30,7 @@ hittable_list world_setup1() {
 hittable_list world_setup_fov_test() {
     hittable_list world;
 
-    double R = std::cos(pi / 4);
+    float R = std::cos(pi / 4);
     auto material_left = make_shared<lambertian>(color{0, 0, 1});
     auto material_right = make_shared<lambertian>(color{1, 0, 0});
 

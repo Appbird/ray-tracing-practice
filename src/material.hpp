@@ -59,9 +59,9 @@ class lambertian : public material {
 class metal : public material {
     private:
         color albedo;
-        double fuzz;
+        float fuzz;
     public: 
-        metal(const color& albedo, double fuzz) : albedo(albedo), fuzz(std::max(std::min(fuzz, 1.0), 0.0)) {};
+        metal(const color& albedo, float fuzz) : albedo(albedo), fuzz(std::max(std::min(fuzz, 1.0f), 0.0f)) {};
 
         bool scatter(
             const ray& r_in,
@@ -85,9 +85,9 @@ class dielectric : public material {
          * or the ratio of the material's refractive index over
          * the refractive index of the enclosing media
          */
-        double refraction_index;
+        float refraction_index;
     public:
-        dielectric(double refraction_index) : refraction_index(refraction_index) {}
+        dielectric(float refraction_index) : refraction_index(refraction_index) {}
         bool scatter(
             const ray& r_in,
             const hit_record& rec,
@@ -96,17 +96,17 @@ class dielectric : public material {
         ) const override {
             attenuation = color{1.0, 1.0, 1.0};
             // 表面から入ってきたか内側から入ってきたかで屈折率が変わる
-            double ri = rec.front_face ? (1.0 / refraction_index) : refraction_index;
+            float ri = rec.front_face ? (1.0 / refraction_index) : refraction_index;
 
             const vec3 unit_direction = unit_vector(r_in.direction());
-            const double cos_theta = min(1.0, dot(-unit_direction, rec.normal));
-            const double sin_theta = std::sqrt(1 - cos_theta*cos_theta);
+            const float cos_theta = min(1.0f, dot(-unit_direction, rec.normal));
+            const float sin_theta = std::sqrt(1 - cos_theta*cos_theta);
             const bool cannot_refract = (ri*sin_theta > 1.0);
             
             vec3 next_direction;
             // Snell方程式に解が存在しなければ全反射する。
             // あるいは、そうでない場合についても一定確率（反射率）で反射させる。
-            if (cannot_refract or reflectance(cos_theta, ri) > random_double()) {
+            if (cannot_refract or reflectance(cos_theta, ri) > random_float()) {
                 next_direction = reflect(unit_direction, rec.normal);
             } else {
                 next_direction = reflact(unit_direction, rec.normal, ri);
@@ -119,13 +119,13 @@ class dielectric : public material {
          * 
          * @param cosine 入射角のコサイン値
          * @param refraction_index 屈折率
-         * @return double 反射率
+         * @return float 反射率
          */
-        static double reflectance(
-            const double cosine,
-            const double refraction_index
+        static float reflectance(
+            const float cosine,
+            const float refraction_index
         ) {
-            double r0 = (1 - refraction_index) / (1 + refraction_index);
+            float r0 = (1 - refraction_index) / (1 + refraction_index);
             r0 = r0 * r0;
             return r0 + (1 - r0) * std::pow(1 - cosine, 5);
         }

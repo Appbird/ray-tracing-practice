@@ -12,7 +12,7 @@
 class camera {
     public:
     // アスペクト比
-    double aspect_ratio = 1.0;
+    float aspect_ratio = 1.0;
     // 画像のピクセルの幅
     int32_t image_width = 100;
     // 1ピクセルあたり何回レイを飛ばすか
@@ -21,7 +21,7 @@ class camera {
     int32_t max_depth = 10;
     
     /** Vertical view angle (field of view) */
-    double vfov = 90;
+    float vfov = 90;
     // カメラの視点
     point3 lookfrom = {0, 0, 0};
     // カメラの注視点
@@ -30,9 +30,9 @@ class camera {
     point3 vup      = {0, 1, 0};
 
     /** ピクセルを通過するレイの角度の最大角 */
-    double defocus_angle = 0;
+    float defocus_angle = 0;
     /** カメラの視点lookfromから焦点が完璧に写る平面までの距離 */
-    double focus_dist = 10;
+    float focus_dist = 10;
 
     public:
     void render(const hittable& world) {
@@ -62,7 +62,7 @@ class camera {
     /** Rendered image height */
     int32_t image_height;
     /** Color scale factor for a sum of pixel samples */
-    double pixel_samples_scale;
+    float pixel_samples_scale;
     /** Camera Center */
     point3 center;
     /** Location of pixel 0, 0 */
@@ -91,11 +91,11 @@ class camera {
         center = lookfrom;
 
         // Viewport Settings
-        // double focal_length = (lookfrom - lookat).length();
-        double theta = degrees_to_radians(vfov);
-        double h = std::tan(theta/2);
-        double viewport_height = 2 * h * focus_dist;
-        double viewport_width = viewport_height * (double(image_width) / image_height);
+        // float focal_length = (lookfrom - lookat).length();
+        float theta = degrees_to_radians(vfov);
+        float h = std::tan(theta/2);
+        float viewport_height = 2 * h * focus_dist;
+        float viewport_width = viewport_height * (float(image_width) / image_height);
 
         w = unit_vector(lookfrom - lookat);
         u = unit_vector(cross(vup, w));
@@ -117,7 +117,7 @@ class camera {
         const vec3 viewport_upper_left = viewport_center - (viewport_u + viewport_v)/2;
         pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v)/2;
 
-        double defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle));
+        float defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle));
         defocus_disk_u = u * defocus_radius;
         defocus_disk_v = v * defocus_radius;
         // --------------------------
@@ -131,13 +131,13 @@ class camera {
         
         const vec3 ray_origin = (defocus_angle <= 0) ? center : defocus_disk_sample();
         const vec3 ray_direction = pixel_sample - ray_origin;
-        const double ray_time = random_double();
+        const float ray_time = random_float();
 
         return ray{ray_origin, ray_direction, ray_time};
     }
 
     vec3 sample_square() const {
-        return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+        return vec3(random_float() - 0.5, random_float() - 0.5, 0);
     }
     
     // カメラのdefocus disk内に含まれる点を参照する。
@@ -172,7 +172,7 @@ class camera {
         }
         // 無限遠にレイが飛んでいくようであれば、空の色を返す。
         vec3 unit_direction = unit_vector(r.direction());
-        const double a = 0.5 * (unit_direction.y() + 1.0);
+        const float a = 0.5 * (unit_direction.y() + 1.0);
         return (1 - a)*color{1.0, 1.0, 1.0} + a*color{0.5, 0.7, 1.0};
     }
 

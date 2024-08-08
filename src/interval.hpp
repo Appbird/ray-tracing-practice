@@ -3,35 +3,35 @@
 #include "rtweekend.hpp"
 
 struct interval {
-    double min, max;
+    float min, max;
 
     // Default interval is empty.
     interval(): min(+infinity), max(-infinity) {}
 
-    interval(double min, double max): min(min), max(max) {}
+    interval(float min, float max): min(min), max(max) {}
     // `a`, `b`の共通部分
     interval(const interval& a, const interval& b) {
         min = std::min(a.min, b.min);
         max = std::max(a.max, b.max);
     }
 
-    double size() const { return max - min; }
-    double contains(double x) const     { return min <= x and x <= max; }
-    double surrounds(double x) const    { return min < x and x < max; }
+    float size() const { return max - min; }
+    float contains(float x) const     { return min <= x and x <= max; }
+    float surrounds(float x) const    { return min < x and x < max; }
     
-    double clamp(double x) const {
+    float clamp(float x) const {
         if (x < min) { return min; }
         if (x > max) { return max; }
         return x;
     }
-    interval expand(double delta) const {
-        double padding = delta / 2;
+    interval expand(float delta) const {
+        float padding = delta / 2;
         return interval{ min - padding, max + padding };
     }
 
-    double overlaps(interval i1, interval i2) {
-        double t_min = std::max(i1.min, i2.min);
-        double t_max = std::min(i1.max, i2.max);
+    float overlaps(interval i1, interval i2) {
+        float t_min = std::max(i1.min, i2.min);
+        float t_max = std::min(i1.max, i2.max);
         return t_min < t_max;
     }
 
