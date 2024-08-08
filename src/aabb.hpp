@@ -7,6 +7,7 @@
 class aabb {
     public:
         interval x, y, z;
+        // Empty AABB
         aabb() {}
         aabb(
             const interval& x,
