@@ -3,6 +3,8 @@
 
 #include "rtweekend.hpp"
 
+#include "texture.hpp"
+
 using std::min;
 using std::max;
 
@@ -32,11 +34,9 @@ class material {
 };
 // ランバート反射に従うマテリアル
 class lambertian : public material {
-    private:
-        color albedo;
     public:
-    lambertian(const color& albedo) : albedo(albedo) {}
-
+    lambertian(const color& albedo) : tex(make_shared<solid_color>(albedo)) {}
+    lambertian(shared_ptr<texture> tex) : tex(tex) {}
     bool scatter(
         const ray& r_in,
         const hit_record& rec,
@@ -49,10 +49,11 @@ class lambertian : public material {
         }
 
         scattered = ray{rec.p, scatter_direction, r_in.time()};
-        attenuation = albedo;
+        attenuation = tex->value(rec.u, rec.v, rec.p);
         return true;
     }
-
+    private:
+        shared_ptr<texture> tex;
 };
 
 // 金属マテリアル
