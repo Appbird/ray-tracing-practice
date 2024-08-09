@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include "rtweekend.hpp"
+#include "perlin.hpp"
 #include "external/rtw_stb_image.hpp"
 
 class texture {
@@ -90,6 +91,17 @@ class image_texture : public texture {
         }
     private:
         rtw_image image;
+};
+
+class noise_texture : public texture {
+    public:
+        noise_texture(double scale) : scale(scale) {}
+        color value(double u, double v, const point3& p) const override {
+            return color{1, 1, 1} * noise.noise(p * scale);
+        }
+    private:
+        perlin noise;
+        double scale;
 };
 
 

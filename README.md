@@ -4,8 +4,10 @@ reference: https://raytracing.github.io/books/RayTracingInOneWeekend.html#output
 # ビルド
 
 ## 外部ファイル
-リポジトリでは動作に必要な次を省いています。
+リポジトリでは動作に必要な次のファイルを省いています。
 - `images/earthmap.jpg`
+- `src/external/stb_image.jpg`
+- `src/external/rtw_stb_image.hpp` ... Next Weekにあるコード
 
 ## 実行環境
 ```

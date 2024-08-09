@@ -12,10 +12,11 @@
 #include <iostream>
 
 int main() {
-    switch (3) {
+    switch (4) {
         case 1: bouncing_spheres(); break;
-        case 2: checkered_spheres(); break;
+        case 2: checkered_spheres();    break;
         case 3: earth();            break;
+        case 4: perlin_spheres();   break;
         default: break;
     }
 }
