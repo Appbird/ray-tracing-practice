@@ -2,6 +2,11 @@
 reference: https://raytracing.github.io/books/RayTracingInOneWeekend.html#outputanimage/creatinganimagefile
 
 # ビルド
+
+## 外部ファイル
+リポジトリでは動作に必要な次を省いています。
+- `images/earthmap.jpg`
+
 ## 実行環境
 ```
 ❯ g++ --version

@@ -72,12 +72,32 @@ class sphere : public hittable {
             rec.p = r.at(rec.t);
             vec3 outward_normal = (rec.p - center) / radius;
             rec.set_face_normal(r, outward_normal);
+            get_sphere_uv(outward_normal, rec.u, rec.v);
             rec.mat = mat;
 
             return true;
         }
 
         aabb bounding_box() const override { return bbox; }
+
+        /**
+         * @brief Get uv coordinate in the sphere which includes `p`
+         * 
+         * @param p should satisfy p.length_squared() ~ 1
+         * @param u output
+         * @param v output
+         */
+        static void get_sphere_uv(
+            const point3& p,
+            double& u, double& v
+        ) {
+            assert(std::abs(p.length_squared() - 1) < 1e-9);
+            double theta = std::acos(-p.y());
+            double phi = std::atan2(-p.z(), p.x()) + pi;
+
+            u = phi / (2*pi);
+            v = theta / pi;
+        }
 };
 
 #endif
