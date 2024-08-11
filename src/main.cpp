@@ -13,7 +13,7 @@
 #include <iostream>
 
 int main() {
-    switch (7) {
+    switch (8) {
         case 1: bouncing_spheres(); break;
         case 2: checkered_spheres(); break;
         case 3: earth(); break;
@@ -21,6 +21,7 @@ int main() {
         case 5: quads(); break;
         case 6: simple_light(); break;
         case 7: cornell_box(); break;
+        case 8: cornell_smoke(); break;
         default: break;
     }
 }
