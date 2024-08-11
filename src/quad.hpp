@@ -5,6 +5,7 @@
 #include "material.hpp"
 #include "aabb.hpp"
 #include "hittable.hpp"
+#include "hittable_list.hpp"
 
 class plane_figure : public hittable {
     public:
@@ -161,4 +162,38 @@ class ring : public plane_figure {
         double r_out;
         double r_in;
 };
+
+inline shared_ptr<hittable_list>box(
+    const point3& a, 
+    const point3& b,
+    shared_ptr<material> mat
+) {
+    auto sides = make_shared<hittable_list>();
+
+    // 真反対の位置にあるボックス
+    auto min = point3{
+        std::min(a.x(), b.x()),
+        std::min(a.y(), b.y()),
+        std::min(a.z(), b.z())
+    };
+    auto max = point3{
+        std::max(a.x(), b.x()),
+        std::max(a.y(), b.y()),
+        std::max(a.z(), b.z())
+    };
+
+    vec3 dx = (max.x() - min.x()) * vec3{1, 0, 0};
+    vec3 dy = (max.y() - min.y()) * vec3{0, 1, 0};
+    vec3 dz = (max.z() - min.z()) * vec3{0, 0, 1};
+
+    sides->add(make_shared<quad>(point3(min.x(), min.y(), max.z()), dx, dy, mat));
+    sides->add(make_shared<quad>(point3(max.x(), min.y(), max.z()), -dz, dy, mat));
+    sides->add(make_shared<quad>(point3(max.x(), min.y(), min.z()), -dx, dy, mat));
+    sides->add(make_shared<quad>(point3(min.x(), min.y(), min.z()), dz, dy, mat));
+    sides->add(make_shared<quad>(point3(min.x(), max.y(), max.z()), dx, -dz, mat));
+    sides->add(make_shared<quad>(point3(min.x(), min.y(), min.z()), dx, dz, mat));
+    return sides;
+}
+
+
 #endif

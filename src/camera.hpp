@@ -19,6 +19,7 @@ class camera {
     int32_t samples_per_pixel = 10;
     // 反射回数
     int32_t max_depth = 10;
+    color background;
     
     /** Vertical view angle (field of view) */
     double vfov = 90;
@@ -159,21 +160,19 @@ class camera {
         
         // Hittableに衝突したときの、その位置に関する情報
         hit_record rec;
+        if (not world.hit(r, interval{0.001, infinity}, rec)) {
+            return background;
+        }
+        
         // 物体に衝突した場合には
         // その衝突点からさらにランダムな方向にレイを飛ばし、その飛ばしたレイの色を用いて評価する
         // 光線の逆進性を用いてこれを解釈すると、ある方向から飛んできたレイが反射率の影響を受けながらランダムな方向に飛んでいく過程だとみなせる。
-        if (world.hit(r, interval{0.001, infinity}, rec)) {
-            ray scattered;
-            color attenuation;
-            if (rec.mat->scatter(r, rec, attenuation, scattered)) {
-                return attenuation * ray_color(scattered, world, depth - 1);
-            }
-            return color{0, 0, 0};
-        }
-        // 無限遠にレイが飛んでいくようであれば、空の色を返す。
-        vec3 unit_direction = unit_vector(r.direction());
-        const double a = 0.5 * (unit_direction.y() + 1.0);
-        return (1 - a)*color{1.0, 1.0, 1.0} + a*color{0.5, 0.7, 1.0};
+        ray scattered;
+        color attenuation;
+        color color_from_emission = rec.mat->emitted(rec.u, rec.v, rec.p);
+        if (not rec.mat->scatter(r, rec, attenuation, scattered)) { return color_from_emission; }
+        color color_from_scatter = attenuation * ray_color(scattered, world, depth - 1);
+        return color_from_scatter + color_from_emission;
     }
 
 };
