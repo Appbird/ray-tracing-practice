@@ -25,7 +25,7 @@ class constant_medium : public hittable {
             const color& albedo
         ):
             boundary(boundary),
-            neg_inv_density(density),
+            neg_inv_density(-1/density),
             phase_function(make_shared<isotropic>(albedo))
         {}
 
@@ -43,7 +43,7 @@ class constant_medium : public hittable {
             rec1.t = std::max(rec1.t, ray_t.min);
             rec2.t = std::min(rec2.t, ray_t.max);
             if (rec1.t >= rec2.t)   { return false; }
-            if (rec1.t < 0)         { return false; }
+            rec1.t = std::max(0.0, rec1.t);
 
             double ray_length = r.direction().length();
             double distance_inside_boundary = (rec2.t - rec1.t) * ray_length;
