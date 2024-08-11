@@ -1,3 +1,4 @@
 build
 images
 src/external/stb_image.hpp
+dst/**
